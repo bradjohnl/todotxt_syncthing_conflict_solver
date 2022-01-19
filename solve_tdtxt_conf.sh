@@ -5,11 +5,14 @@ WORKDIR=$1
 cd $WORKDIR
 mkdir -p Backups
 
-#Group conflicts
-cat todo*.txt | sort -u | tee todo.txt
+#Backup todo.txt
+cp todo.txt Backups/$(date '+%Y-%m-%d-%H%M')_todo.txt
 
 #Backup done.txt
 cp done.txt Backups/$(date '+%Y-%m-%d-%H%M')_done.txt
+
+#Group conflicts
+cat todo*.txt | sort -u | tee todo.txt
 
 #Group done.txt conflicts
 cat done*.txt | sort -u | tee done.txt
@@ -20,8 +23,6 @@ cat done.txt | sed "s/x //g" > procdone.out
 #Remove the collected done tasks from the todo.txt and save results to a tempfile
 grep -Fvxf procdone.out todo.txt > todo.tmp.txt
 
-#Backup todo.txt
-mv todo.txt Backups/$(date '+%Y-%m-%d-%H%M')_todo.txt
 
 #Save processed todo.txt and remove tempfile
 mv todo.tmp.txt todo.txt
